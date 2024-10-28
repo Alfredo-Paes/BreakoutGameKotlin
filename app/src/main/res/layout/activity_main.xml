@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="#52057B"
+    android:background="#3E00FF"
     android:orientation="vertical"
     android:gravity="center">
     <TextView
@@ -34,7 +34,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_gravity="center"
-        android:background="@drawable/button_paly"
+        android:background="@drawable/play_button"
         android:onClick="startGame"/>
     <TextView
         android:id="@+id/text2"
