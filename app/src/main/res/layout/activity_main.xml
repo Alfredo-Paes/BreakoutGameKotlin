@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,8 +19,15 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:fontFamily="@font/press_start_regular"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         android:text="Breakout"/>
+    <ImageView
+        android:id="@+id/image_breakout"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/breakout" />
     <ImageButton
         android:id="@+id/startbtn"
         android:layout_marginTop="28dp"
