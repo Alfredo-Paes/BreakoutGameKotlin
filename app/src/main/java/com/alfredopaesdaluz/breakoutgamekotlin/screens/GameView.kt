@@ -33,7 +33,8 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
     private var oldPaddleX = 0f
     private var points = 0
     private var life = 3
-    private var ball: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ball)
+    private var lifeHeart: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.life)
+    private var ball: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.metal_ball)
     private var paddle: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.paddle)
     private var dWidth = 0
     private var dHeight = 0
@@ -51,7 +52,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
     init {
         //mpHit = MediaPlayer.create(context, R.raw.hit)
         //mpMiss = MediaPlayer.create(context, R.raw.miss)
-        //mpBreak = MediaPlayer.create(context, R.raw.breaking)
+        mpBreak = MediaPlayer.create(context, R.raw.hit_brick)
 
         textPaint.color = Color.BLACK
         textPaint.textSize = TEXT_SIZE
@@ -89,7 +90,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(Color.parseColor("#FCF596"))
         ballX += velocity.x.toFloat()
         ballY += velocity.y.toFloat()
 
@@ -142,12 +143,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
 
         // Desenho da pontuação e das vidas
         canvas.drawText("$points", 20f, TEXT_SIZE, textPaint)
-        healthPaint.color = when (life) {
-            2 -> Color.YELLOW
-            1 -> Color.RED
-            else -> Color.GREEN
-        }
-        canvas.drawRect((dWidth - 200).toFloat(), 30f, (dWidth - 200 + 60 * life).toFloat(), 80f, healthPaint)
+        drawLives(canvas)
 
         // Colisão da bola com os tijolos
         for (i in 0 until numBricks) {
@@ -168,13 +164,24 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
                 }
             }
         }
-
         // Verificação de game over
         if (brokenBricks == numBricks) {
             gameOver = true
         }
         if (!gameOver) {
             handler.postDelayed(runnable, UPDATE_MILLIS)
+        }
+    }
+    private fun drawLives(canvas: Canvas) {
+        // Define o tamanho e posição inicial dos ícones de vida
+        val iconWidth = lifeHeart.width.toFloat()
+        val startX = dWidth - 200f  // Posição inicial no eixo X, à direita da tela
+        val y = 30f  // Posição no eixo Y para desenhar os ícones
+
+        // Desenha um ícone para cada vida restante
+        for (i in 0 until life) {
+            val x = startX + i * (iconWidth + 10)  // Calcula a posição X para cada ícone, com espaçamento de 10
+            canvas.drawBitmap(lifeHeart, x, y, null)
         }
     }
 
