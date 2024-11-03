@@ -17,16 +17,21 @@ import com.alfredopaesdaluz.breakoutgamekotlin.utils.VelocityUtils
 import java.util.*
 
 class GameView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
+    private val TOP_BAR_HEIGHT = 100f
+
     private var ballX = 0f
     private var ballY = 0f
     private val velocity = VelocityUtils(25, 32)
     private val handler = Handler()
     private val UPDATE_MILLIS = 30L
     private val runnable = Runnable { invalidate() }
+
     private val textPaint = Paint()
-    private val healthPaint = Paint()
     private val brickPaint = Paint()
-    private val TEXT_SIZE = 120f
+    private val borderPaint = Paint()
+    private val backgroundPaint = Paint()
+    private val TEXT_SIZE = 60f
+
     private var paddleX = 0f
     private var paddleY = 0f
     private var oldX = 0f
@@ -58,8 +63,11 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         textPaint.textSize = TEXT_SIZE
         textPaint.textAlign = Paint.Align.LEFT
 
-        healthPaint.color = Color.GREEN
         brickPaint.color = Color.argb(255, 249, 129, 0)
+        borderPaint.color = Color.BLACK
+        borderPaint.style = Paint.Style.STROKE
+        borderPaint.strokeWidth = 5f
+        backgroundPaint.color = Color.WHITE
 
         val display: Display = (context as Activity).windowManager.defaultDisplay
         val size = Point()
@@ -77,6 +85,10 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         createBricks()
     }
 
+    /**
+     * createBricks(): Método responsável por desenhar um tijolo individualmente, sua altura e
+     * largura.
+     * */
     private fun createBricks() {
         val brickWidth = dWidth / 8
         val brickHeight = dHeight / 16
@@ -88,11 +100,30 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         }
     }
 
+    /**
+     * onDraw(canvas: Canvas): Método responsável por realizar o desenho da tela, desde as imagens
+     * PNG até os tijolos renderizados.
+     * */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawColor(Color.parseColor("#FCF596"))
         ballX += velocity.x.toFloat()
         ballY += velocity.y.toFloat()
+
+        // Desenha o fundo da barra superior
+        canvas.drawRect(0f, 0f, dWidth.toFloat(), TOP_BAR_HEIGHT, backgroundPaint)
+        // Desenha a borda da barra superior
+        canvas.drawRect(0f, 0f, dWidth.toFloat(), TOP_BAR_HEIGHT, borderPaint)
+
+        drawTopBar(canvas)
+
+        // Colisão com a borda superior da barra
+        if (ballY <= TOP_BAR_HEIGHT) {
+            velocity.y *= -1
+            ballY = TOP_BAR_HEIGHT  // Reposiciona a bola logo abaixo da barra superior
+        }
+
+
 
         // Colisão com as bordas
         if (ballX >= dWidth - ball.width || ballX <= 0) {
@@ -127,23 +158,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
 
         canvas.drawBitmap(ball, ballX, ballY, null)
         canvas.drawBitmap(paddle, paddleX, paddleY, null)
-
-        // Renderização dos tijolos
-        for (i in 0 until numBricks) {
-            if (bricks[i].isVisible) {
-                canvas.drawRect(
-                    (bricks[i].column * bricks[i].width + 1).toFloat(),
-                    (bricks[i].row * bricks[i].height + 1).toFloat(),
-                    (bricks[i].column * bricks[i].width + bricks[i].width - 1).toFloat(),
-                    (bricks[i].row * bricks[i].height + bricks[i].height - 1).toFloat(),
-                    brickPaint
-                )
-            }
-        }
-
-        // Desenho da pontuação e das vidas
-        canvas.drawText("$points", 20f, TEXT_SIZE, textPaint)
-        drawLives(canvas)
+        drawBricks(canvas, TOP_BAR_HEIGHT)
 
         // Colisão da bola com os tijolos
         for (i in 0 until numBricks) {
@@ -172,10 +187,41 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
             handler.postDelayed(runnable, UPDATE_MILLIS)
         }
     }
+
+    /**
+     * drawTopBar(canvas: Canvas): Responsável por desenhar uma barra superior no jogo,
+     * para conter a pontuação do jogador e a quantidade de vidas do jogador.
+     * */
+    private fun drawTopBar(canvas: Canvas) {
+        // Renderiza a pontuação na barra superior
+        canvas.drawText("Score: $points", 20f, TOP_BAR_HEIGHT / 2, textPaint)
+        drawLives(canvas)
+    }
+
+    /**
+     * drawBricks(canvas: Canvas, offsetY: Float): Responsável em renderizar os tijolos do jogo.
+     * */
+    private fun drawBricks(canvas: Canvas, offsetY: Float) {
+        // Desenha cada tijolo, aplicando um deslocamento Y para começar abaixo da barra superior
+        for (i in 0 until numBricks) {
+            if (bricks[i].isVisible) {
+                canvas.drawRect(
+                    (bricks[i].column * bricks[i].width + 1).toFloat(),
+                    (bricks[i].row * bricks[i].height + 1 + offsetY),
+                    (bricks[i].column * bricks[i].width + bricks[i].width - 1).toFloat(),
+                    (bricks[i].row * bricks[i].height + bricks[i].height - 1 + offsetY),
+                    brickPaint
+                )
+            }
+        }
+    }
+
+    /**
+     * drawLines(canvas:Canvas): Responsável em renderizar as vidas que o jogador possui, nesse caso, 3 vidas.
+     * */
     private fun drawLives(canvas: Canvas) {
-        // Define o tamanho e posição inicial dos ícones de vida
         val iconWidth = lifeHeart.width.toFloat()
-        val startX = dWidth - 200f  // Posição inicial no eixo X, à direita da tela
+        val startX = dWidth - 250f  // Posição inicial no eixo X, à direita da tela
         val y = 30f  // Posição no eixo Y para desenhar os ícones
 
         // Desenha um ícone para cada vida restante
@@ -185,6 +231,10 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         }
     }
 
+    /**
+     * onTouchEvent(event: MotionEvent): Boolean: Identifica se houve toque na tela e movimentação
+     * com gestos no touchscreen do dispositivo.
+     */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val touchX = event.x
@@ -209,6 +259,9 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         return true
     }
 
+    /**
+     * launchGameOver(): Responsável em redireecionar o jogador para a tela de GameOver, independete se ganhou ou perdeu.
+     * */
     private fun launchGameOver() {
         handler.removeCallbacksAndMessages(null)
         val intent = Intent(context, GameOverView::class.java)
@@ -217,6 +270,9 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         (context as Activity).finish()
     }
 
+    /**
+     * xVelocity(): Método por calcular a velocidade da bola.
+     * */
     private fun xVelocity(): Int {
         val values = intArrayOf(-35, -30, -25, 25, 30, 35)
         return values[random.nextInt(6)]

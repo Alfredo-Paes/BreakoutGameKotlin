@@ -1,6 +1,7 @@
 package com.alfredopaesdaluz.breakoutgamekotlin.screens
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -18,6 +19,8 @@ class GameOverView : AppCompatActivity() {
     private lateinit var victoryImage: ImageView
     private lateinit var gameOverText: TextView
     private lateinit var playerGameOver: ImageView
+    private var mediaPlayer: MediaPlayer? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,21 +45,43 @@ class GameOverView : AppCompatActivity() {
 
             gameOverText.visibility = View.GONE
             playerGameOver.visibility = View.GONE
+
+            // Inicializa e toca a música de vitória em loop
+            mediaPlayer = MediaPlayer.create(this, R.raw.you_win)
+            mediaPlayer?.isLooping = true
+            mediaPlayer?.start()
         } else {
             gameOverText.visibility = View.VISIBLE
             playerGameOver.visibility = View.VISIBLE
+
+            mediaPlayer = MediaPlayer.create(this, R.raw.game_over)
+            mediaPlayer?.isLooping = false
+            mediaPlayer?.start()
         }
 
         playerScore.text = points.toString()
     }
-
+    /**
+     * restar(): Método responsável em reiniciar o jogo.
+     * */
     fun restart(view: View) {
+        mediaPlayer?.stop()
+
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
-
+    /**
+     * exit(): Encerra a aplicação por completo.
+     * */
     fun exit(view: View) {
+        mediaPlayer?.stop()
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }
