@@ -40,9 +40,9 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
     private var dHeight = 0
     private var ballWidth = 0
     private var ballHeight = 0
-    private var mpHit: MediaPlayer? = null
-    private var mpMiss: MediaPlayer? = null
-    private var mpBreak: MediaPlayer? = null
+    private var soundHitBall: MediaPlayer? = null
+    private var soundMissBall: MediaPlayer? = null
+    private var soundBreakBrick: MediaPlayer? = null
     private val random = Random()
     private val bricks = Array(30) { BricksComponent(0, 0, 0, 0) }
     private var numBricks = 0
@@ -50,9 +50,9 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
     private var gameOver = false
 
     init {
-        //mpHit = MediaPlayer.create(context, R.raw.hit)
-        //mpMiss = MediaPlayer.create(context, R.raw.miss)
-        mpBreak = MediaPlayer.create(context, R.raw.hit_brick)
+        soundHitBall = MediaPlayer.create(context, R.raw.hit_ball)
+        soundMissBall = MediaPlayer.create(context, R.raw.miss_ball)
+        soundBreakBrick = MediaPlayer.create(context, R.raw.hit_brick)
 
         textPaint.color = Color.BLACK
         textPaint.textSize = TEXT_SIZE
@@ -107,7 +107,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         if (ballY > paddleY + paddle.height) {
             ballX = 1 + random.nextInt(dWidth - ball.width - 1).toFloat()
             ballY = dHeight / 3f
-            mpMiss?.start()
+            soundMissBall?.start()
             velocity.x = xVelocity()
             velocity.y = 32
             life--
@@ -120,7 +120,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
         // Colisão com a plataforma (paddle)
         if ((ballX + ball.width >= paddleX) && (ballX <= paddleX + paddle.width)
             && (ballY + ball.height >= paddleY) && (ballY + ball.height <= paddleY + paddle.height)) {
-            mpHit?.start()
+            soundHitBall?.start()
             velocity.x += 1
             velocity.y = (velocity.y + 1) * -1
         }
@@ -153,7 +153,7 @@ class GameView(context: Context, attrs: AttributeSet? = null) : View(context, at
                     && ballY <= bricks[i].row * bricks[i].height + bricks[i].height
                     && ballY >= bricks[i].row * bricks[i].height
                 ) {
-                    mpBreak?.start()
+                    soundBreakBrick?.start()
                     velocity.y = (velocity.y + 1) * -1
                     bricks[i].setInvisible()
                     points += 10
