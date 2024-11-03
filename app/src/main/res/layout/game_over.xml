@@ -84,7 +84,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="0dp"
                 android:background="@drawable/play_button"
-                android:onClick="replayGame"
+                android:onClick="restart"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
             <TextView
@@ -117,7 +117,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="0dp"
                 android:background="@drawable/cancel_button"
-                android:onClick="exitGame"
+                android:onClick="exit"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
             <TextView
                 android:id="@+id/exitTxt"

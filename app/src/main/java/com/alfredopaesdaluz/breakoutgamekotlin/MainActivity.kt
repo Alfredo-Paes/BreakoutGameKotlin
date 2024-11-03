@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
+import com.alfredopaesdaluz.breakoutgamekotlin.screens.GameView
 
 class MainActivity : AppCompatActivity() {
 
