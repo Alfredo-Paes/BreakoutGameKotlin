@@ -12,6 +12,31 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/victoryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="You Win!"
+            android:textColor="#FFFFFF"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/press_start_regular"
+            android:visibility="gone"
+            android:layout_marginTop="20dp" />
+        <ImageView
+            android:id="@+id/trophy"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:src="@drawable/trophy"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            android:layout_marginTop="20dp" />
+
         <TextView
             android:id="@+id/gameOverTxt"
             android:layout_width="wrap_content"

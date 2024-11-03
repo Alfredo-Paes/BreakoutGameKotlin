@@ -14,7 +14,8 @@ class GameOverView : AppCompatActivity() {
     private lateinit var playerScore: TextView
     private lateinit var imgBtn1: ImageButton
     private lateinit var imgBtn2: ImageButton
-    //private lateinit var playerWinner: ImageView
+    private lateinit var victoryText: TextView
+    private lateinit var victoryImage: ImageView
     private lateinit var gameOverText: TextView
     private lateinit var playerGameOver: ImageView
 
@@ -25,16 +26,22 @@ class GameOverView : AppCompatActivity() {
         imgBtn1 = findViewById(R.id.replayBtn)
         imgBtn2 = findViewById(R.id.exitBtn)
 
-        //playerWinner = findViewById(R.id.winner)
         gameOverText =findViewById(R.id.gameOverTxt)
         playerGameOver = findViewById(R.id.gameOver)
+
+        victoryText = findViewById(R.id.victoryText)
+        victoryImage = findViewById(R.id.trophy)
+
         playerScore = findViewById(R.id.score)
 
         val points = intent.extras?.getInt("points") ?: 0
 
         if (points == 240) {
-            //playerScore.visibility = View.VISIBLE
-            //playerWinner.visibility = View.VISIBLE
+            victoryText.visibility = View.VISIBLE
+            victoryImage.visibility = View.VISIBLE
+
+            gameOverText.visibility = View.GONE
+            playerGameOver.visibility = View.GONE
         } else {
             gameOverText.visibility = View.VISIBLE
             playerGameOver.visibility = View.VISIBLE
