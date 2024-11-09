@@ -22,5 +22,8 @@ A aplicação foi desenvolvida com a linguagem Kotlin, para dispositivos Android
   <img src="docs/04-screen.png" height="310" width="180">
 </div>
 
+## Vídeo de demonstração:
+https://youtu.be/3eRzc9bYUeU
+
 ### Autor:
 - Alfredo Paes da Luz.
